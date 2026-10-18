@@ -276,14 +276,17 @@ let braceletG,loopG;
   for(const sg of [1,-1]){let s=.3;for(let i=0;i<10;i++){const w=2.42-i*.03;
     const geo=new THREE.ExtrudeGeometry(rr(w,.5,.06),{depth:.2,bevelEnabled:true,bevelThickness:.05,bevelSize:.05,bevelSegments:2});geo.translate(0,0,-.1);
     const m=new THREE.Mesh(geo,M.steel);place(m,sg,s);braceletG.add(m);s+=.65;}}
-  const [c,x]=cv(64);x.fillStyle='#1b2947';x.fillRect(0,0,64,64);for(let i=0;i<8;i++)for(let j=0;j<8;j++){x.fillStyle=(i+j)%2?'#22345a':'#152139';x.fillRect(i*8+1,j*8+1,6,6);}
-  const nt=tex(c);nt.wrapS=nt.wrapT=THREE.RepeatWrapping;nt.repeat.set(10,1);
-  const navy=new THREE.MeshStandardMaterial({color:0xffffff,map:nt,roughness:.9,metalness:0}),keeper=new THREE.MeshStandardMaterial({color:0x1a2a4c,roughness:.7,metalness:.1});
+  /* rubber strap: one continuous moulded band with a fine Tapisserie micro-grid */
+  const [c,x]=cv(128);x.fillStyle='#121a2a';x.fillRect(0,0,128,128);x.fillStyle='#24304b';for(let i=0;i<8;i++)for(let j=0;j<8;j++)x.fillRect(i*16+2,j*16+2,12,12);
+  const nt=tex(c);nt.wrapS=nt.wrapT=THREE.RepeatWrapping;nt.repeat.set(5,14);
+  const rubber=new THREE.MeshStandardMaterial({color:0xffffff,map:nt,roughness:.8,metalness:0});
   loopG=new THREE.Group();loopG.visible=false;g.add(loopG);
-  const seg=new THREE.BoxGeometry(2.3,.2,.13),kp=new THREE.BoxGeometry(2.4,.24,.2),bar=new THREE.BoxGeometry(2.58,.16,.22);
-  for(const sg of [1,-1]){const b=new THREE.Mesh(bar,M.polish);place(b,sg,.1);loopG.add(b);
-    for(let s=.28;s<6.9;s+=.185){const m=new THREE.Mesh(seg,navy);place(m,sg,s);loopG.add(m);}
-    for(const s of [1.7,3.3]){const m=new THREE.Mesh(kp,keeper);place(m,sg,s);loopG.add(m);}}
+  const S0=.05,S1=7.0,TH=.15;
+  const band=sg=>{const geo=new THREE.BoxGeometry(1,1,1,2,160,1),p=geo.attributes.position;
+    for(let i=0;i<p.count;i++){const u=p.getX(i),v=p.getY(i)+.5,w=p.getZ(i),s=S0+v*(S1-S0),th=s/R,wd=2.5-.2*v,r2=R+w*TH;
+      p.setXYZ(i,sg*u*wd,sg*(y0+r2*Math.sin(th)),(z0-R)+r2*Math.cos(th));}
+    geo.computeVertexNormals();return geo;};
+  for(const sg of [1,-1])loopG.add(new THREE.Mesh(band(sg),rubber));
 }
 /* 08 caseback */
 {const g=layer(-.6,-1.95);
@@ -357,7 +360,7 @@ function setCaption(){
   setTimeout(()=>{
     if(step===0){$('capNum').textContent='The piece';$('capTitle').textContent='Eight layers.';$('capLine').textContent='Eight sides, eight screws. Drag to turn it, then open it.';}
     else{const [t,l]=INFO[step-1];$('capNum').textContent=String(step).padStart(2,'0')+' / 08';$('capTitle').textContent=t;
-      $('capLine').textContent=step===7?('Satin-brushed steel with polished bevels, flowing into the '+(loopG.visible?'Tapisserie Sport Loop.':'Slab Link bracelet.')):l;}
+      $('capLine').textContent=step===7?('Satin-brushed steel with polished bevels, flowing into the '+(loopG.visible?'Tapisserie rubber strap.':'Slab Link bracelet.')):l;}
     [...pips.children].forEach((p,i)=>p.classList.toggle('on',i<step));
     $('next').textContent=step===0?'Open the watch':step===8?'Close the watch':'Next layer';
     cap.classList.remove('swap');
@@ -385,7 +388,7 @@ $('replay').onclick=()=>{
   $('top').classList.add('on');ticking=true;frozen=null;phase='steps';step=0;setCaption();setTimeout(()=>$('panel').classList.add('on'),600);
 };
 $('soundBtn').onclick=()=>{muted=!muted;$('soundBtn').textContent='Sound · '+(muted?'Off':'On');};
-$('strapBtn').onclick=()=>{const loop=!loopG.visible;loopG.visible=loop;braceletG.visible=!loop;$('strapBtn').textContent='Strap · '+(loop?'Sport Loop':'Bracelet');if(step===7)setCaption();};
+$('strapBtn').onclick=()=>{const loop=!loopG.visible;loopG.visible=loop;braceletG.visible=!loop;$('strapBtn').textContent='Strap · '+(loop?'Rubber':'Bracelet');if(step===7)setCaption();};
 
 /* drag to turn */
 let drag=null,yaw=0,pitch=0;
