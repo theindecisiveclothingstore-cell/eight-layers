@@ -18,7 +18,7 @@ html,body{height:100%;background:#000;color:var(--ink);overflow:hidden;font-fami
 .overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 16px;transition:opacity 1s}
 .overlay.gone{opacity:0;pointer-events:none}
 #intro{background:radial-gradient(ellipse at 50% 42%,#246060 0%,#1c5050 70%)}
-.logo{width:148px;height:auto;margin-bottom:26px}
+.logo{width:168px;height:auto;margin-bottom:56px}
 #intro .title{font-size:46px;line-height:1.05;margin:16px 0 10px}
 #intro p{color:var(--mute);font-size:15px;line-height:1.5;max-width:300px;margin:8px 0 30px}
 #status{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-top:16px;min-height:14px}
@@ -42,17 +42,12 @@ html,body{height:100%;background:#000;color:var(--ink);overflow:hidden;font-fami
 <body>
 <div id="ar"></div>
 <div id="scan"><svg viewBox="0 0 200 200"><polygon class="oct" points="141.4,41.4 158.6,58.6 158.6,141.4 141.4,158.6 58.6,158.6 41.4,141.4 41.4,58.6 58.6,41.4"/></svg></div>
-<div id="hint" style="opacity:0"><div class="mono">The Octagon Case</div><div class="serif">Look at the lid.</div></div>
+<div id="hint" style="opacity:0"></div>
 <div id="panel"><div class="mono" id="capNum"></div><div class="serif" id="capTitle"></div><div id="capLine"></div><button class="btn" id="next"></button><a class="link" id="demo" href="https://theindecisiveclothingstore-cell.github.io/eight-layers/">Open it full screen</a></div>
 <div class="overlay" id="intro">
   <img id="logoIntro" class="logo" alt="AP × Apple">
-  <div class="mono" id="tierLine">A private delivery</div>
-  <div class="serif title">The watch is not in the case.</div>
-  <p>Close the case. Hold your phone over the lid and look at it through the camera.</p>
   <button class="btn" id="begin">Open the camera</button>
   <div id="status"></div>
-  <a class="link" href="https://theindecisiveclothingstore-cell.github.io/eight-layers/" style="margin-top:10px">No case with you? See the watch</a>
-  <div class="foot">Student concept by Om Chheda · Istituto Marangoni. Not affiliated with or endorsed by Audemars Piguet or Apple.</div>
 </div>
 <script>/* The lid of The Octagon Case, drawn flat. The same artwork is printed on the real lid,
    used as the lid texture in the 3D unboxing, and used as the camera target in AR. */
@@ -101,7 +96,6 @@ const NAME=(P.get('name')||'').trim().slice(0,22);
 const WATCH_URL='https://theindecisiveclothingstore-cell.github.io/eight-layers/'+(NAME?('?name='+encodeURIComponent(NAME)):'');
 $('demo').href=WATCH_URL;
 $('logoIntro').src=LOGO;
-if(P.get('tier')==='creator')$('tierLine').textContent='A preview delivery';
 const LOGO_IMG=new Image();LOGO_IMG.src=LOGO;
 function whenLogo(f){if(LOGO_IMG.complete&&LOGO_IMG.naturalWidth)f(LOGO_IMG);else LOGO_IMG.addEventListener('load',()=>f(LOGO_IMG));}
 function tintLogo(img,color,w){const h=Math.round(w*img.height/img.width),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(img,0,0,w,h);x.globalCompositeOperation='source-in';x.fillStyle=color;x.fillRect(0,0,w,h);return c;}
